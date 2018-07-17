@@ -98,8 +98,9 @@ public class Character : MonoBehaviour {
 		}
 	}
 
-	public void speak(string message) {
+	public IEnumerator speak(string message, float time) {
 		GameObject ui_obj = GameObject.Find("UI");
+		RectTransform canvas_rect_transform = ui_obj.GetComponent<RectTransform>();
 
 		GameObject dialogue_obj = new GameObject();
 		dialogue_obj.transform.parent = ui_obj.transform;
@@ -108,11 +109,18 @@ public class Character : MonoBehaviour {
 		Text dialogue = dialogue_obj.AddComponent<Text>();
 		dialogue.font = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
 		dialogue.text = this.name + " : " + message;
-		dialogue.fontSize = 100;
+		dialogue.fontSize = 12;
 
 		RectTransform rectTransform = dialogue.GetComponent<RectTransform>();
-		rectTransform.localPosition = new Vector3(0, 0, 0);
-		rectTransform.sizeDelta = new Vector2(400, 200);
+		float width = canvas_rect_transform.sizeDelta.x;
+		float height = canvas_rect_transform.sizeDelta.y;
+		rectTransform.localPosition = new Vector3(0, (-(height/2.0f) + 40.0f), 0);
+		rectTransform.sizeDelta = new Vector2(200, 30);
+		rectTransform.eulerAngles = new Vector3(0, 0, 0);
+
+		yield return new WaitForSeconds(time);
+
+		Destroy(dialogue_obj);
 	}
 
 	void Start() {
